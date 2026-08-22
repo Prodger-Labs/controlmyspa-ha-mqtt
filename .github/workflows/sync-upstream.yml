@@ -1,0 +1,56 @@
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # 06:00 UTC on the 1st of every month
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Add upstream remote
+        run: git remote add upstream https://github.com/mikakoivisto/controlmyspa-ha-mqtt.git
+
+      - name: Fetch upstream
+        run: git fetch upstream master
+
+      - name: Check for new commits
+        id: check
+        run: |
+          if git merge-base --is-ancestor upstream/master HEAD; then
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create sync branch and merge
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          BRANCH="sync-upstream-$(date +%Y-%m-%d)"
+          echo "BRANCH=$BRANCH" >> "$GITHUB_ENV"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b "$BRANCH"
+          git merge upstream/master --no-edit
+          git push origin "$BRANCH"
+
+      - name: Open PR
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          gh pr create \
+            --title "Monthly sync with upstream" \
+            --body "Automated monthly pull from mikakoivisto/controlmyspa-ha-mqtt. Review before merging — our local fix (useCelsius in lib/spa.js) could conflict with or be superseded by upstream changes." \
+            --base master \
+            --head "$BRANCH"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
