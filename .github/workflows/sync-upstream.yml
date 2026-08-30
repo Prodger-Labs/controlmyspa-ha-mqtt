@@ -42,14 +42,40 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b "$BRANCH"
           git merge upstream/master --no-edit
-          git push origin "$BRANCH"
+
+      # Upstream has not moved config.yaml off "1.0.7" since Dec 2022. The
+      # Supervisor decides whether to rebuild a local-build add-on purely from
+      # that version string, so an unbumped sync ships nothing to the Green and
+      # the add-on keeps running a stale image. That is how the July 2026
+      # ControlMySpa auth fix sat unshipped until the old endpoint 404'd.
+      - name: Bump patch version so the Supervisor actually rebuilds
+        if: steps.check.outputs.has_changes == 'true'
+        run: |
+          CURRENT=$(sed -n 's/^version: "\(.*\)"$/\1/p' config.yaml)
+          if [ -z "$CURRENT" ]; then
+            echo "Could not read version from config.yaml" >&2
+            exit 1
+          fi
+          MAJOR=${CURRENT%%.*}
+          REST=${CURRENT#*.}
+          MINOR=${REST%%.*}
+          PATCH=${REST#*.}
+          NEXT="$MAJOR.$MINOR.$((PATCH + 1))"
+          sed -i "s/^version: \"$CURRENT\"$/version: \"$NEXT\"/" config.yaml
+          grep -q "^version: \"$NEXT\"$" config.yaml || { echo "Version bump did not apply" >&2; exit 1; }
+          echo "NEXT_VERSION=$NEXT" >> "$GITHUB_ENV"
+          git commit -am "Bump add-on version to $NEXT for upstream sync"
+
+      - name: Push sync branch
+        if: steps.check.outputs.has_changes == 'true'
+        run: git push origin "$BRANCH"
 
       - name: Open PR
         if: steps.check.outputs.has_changes == 'true'
         run: |
           gh pr create \
-            --title "Monthly sync with upstream" \
-            --body "Automated monthly pull from mikakoivisto/controlmyspa-ha-mqtt. Review before merging — our local fix (useCelsius in lib/spa.js) could conflict with or be superseded by upstream changes." \
+            --title "Monthly sync with upstream (v$NEXT_VERSION)" \
+            --body "Automated monthly pull from mikakoivisto/controlmyspa-ha-mqtt, with the add-on version bumped to $NEXT_VERSION so the Supervisor rebuilds. Review before merging, because our local fix (useCelsius in lib/spa.js) could conflict with or be superseded by upstream changes." \
             --base master \
             --head "$BRANCH"
         env:
