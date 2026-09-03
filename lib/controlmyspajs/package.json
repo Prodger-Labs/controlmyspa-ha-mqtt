@@ -20,7 +20,7 @@
     "url": "https://gitlab.com/VVlasy/controlmyspajs/issues"
   },
   "dependencies": {
-    "axios": "^0.21.0"
+    "axios": "^0.33.0"
   },
   "engines": {
     "node": ">=13.11.0"
