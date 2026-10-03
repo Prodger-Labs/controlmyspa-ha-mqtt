@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.0.9
+
+Moves the image to `ghcr.io/hassio-addons/base:21.0.7` (Alpine 3.24, Node 24)
+and adds a Trivy scan to CI that fails on fixable critical vulnerabilities.
+The old 14.0.2 base carried fixable criticals in busybox, curl and tempio.
+
+The version bump is what makes the Supervisor rebuild on the new base. Home
+Assistant now runs on an amd64 VM rather than the arm64 Green, and the
+Supervisor builds this add-on locally, so the rebuild happens there.
+
+`arch` drops armhf, armv7 and i386. The 21.x base publishes amd64 and arm64
+only, so those three could no longer build, and the Supervisor already flags
+them as deprecated.
+
 ## 1.0.8
 
 Ships the JSON login flow so the add-on can authenticate again.
