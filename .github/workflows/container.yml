@@ -15,3 +15,15 @@ jobs:
         context: .
         file: Dockerfile
         push: false
+        load: true
+        tags: controlmyspa-ha-mqtt:ci
+    - name: Scan the image for fixable critical vulnerabilities
+      # Fails only on a CRITICAL that has a fixed version published. A critical
+      # with no fix yet is left out: there is nothing to upgrade to.
+      uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
+      with:
+        image-ref: controlmyspa-ha-mqtt:ci
+        scanners: vuln
+        severity: CRITICAL
+        ignore-unfixed: true
+        exit-code: '1'
