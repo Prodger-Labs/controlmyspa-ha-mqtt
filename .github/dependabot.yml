@@ -1,0 +1,46 @@
+version: 2
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+      time: '03:00'
+      timezone: Europe/London
+    groups:
+      actions:
+        patterns: ['*']
+    labels:
+      - dependencies
+      - area:ci
+    cooldown:
+      default-days: 7
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+      time: "03:00"
+      timezone: Europe/London
+    cooldown:
+      default-days: 7
+    labels:
+      - dependencies
+    groups:
+      npm:
+        patterns: ["*"]
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly
+      day: sunday
+      time: "03:00"
+      timezone: Europe/London
+    cooldown:
+      default-days: 7
+    labels:
+      - dependencies
+    groups:
+      docker:
+        patterns: ["*"]
