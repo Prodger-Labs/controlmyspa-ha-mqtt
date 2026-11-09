@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.10
+
+Moves the image to `ghcr.io/hassio-addons/base:21.0.10`. The 21.0.7 base
+carried brotli-libs 1.2.0-r1, which the Trivy scan flags as a fixable
+critical (CVE-2026-111497, fixed in 1.2.1-r0).
+
+The version bump makes the Supervisor rebuild on the new base.
+
 ## 1.0.9
 
 Moves the image to `ghcr.io/hassio-addons/base:21.0.7` (Alpine 3.24, Node 24)
