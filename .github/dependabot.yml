@@ -5,8 +5,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
-      day: sunday
-      time: '03:00'
+      day: thursday
+      time: "00:30"
       timezone: Europe/London
     groups:
       actions:
@@ -20,8 +20,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
-      day: sunday
-      time: "03:00"
+      day: thursday
+      time: "00:30"
       timezone: Europe/London
     cooldown:
       default-days: 7
@@ -34,8 +34,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
-      day: sunday
-      time: "03:00"
+      day: thursday
+      time: "00:30"
       timezone: Europe/London
     cooldown:
       default-days: 7
