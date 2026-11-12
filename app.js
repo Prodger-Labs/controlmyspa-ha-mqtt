@@ -332,7 +332,7 @@ class App extends EventEmitter {
       command_topic: `${topicPrefix}/duration/set`,
       state_topic: `${topicPrefix}/duration`,
       min: 15,
-      max: 240,
+      max: 1440, // the spa API takes 1 to 96 fifteen minute intervals, so 24h
       step: 15,
       unit_of_measurement: "min",
       availability: self.getAvailabilityDiscovery(spa),

@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.0.11
+
+Raises the filter duration number from a 240 minute maximum to 1440. The spa
+takes 1 to 96 fifteen minute intervals, so a filter can run for up to 24 hours.
+Filter 1 is set to 360 minutes, and with the old maximum Home Assistant
+rejected every state publish for it (hundreds of errors a week).
+
+The version bump makes the Supervisor rebuild and republish the discovery config.
+
 ## 1.0.10
 
 Moves the image to `ghcr.io/hassio-addons/base:21.0.10`. The 21.0.7 base
