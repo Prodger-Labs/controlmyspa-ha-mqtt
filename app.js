@@ -461,7 +461,7 @@ class App extends EventEmitter {
     let stateTopic = `controlmyspa/${spaId}/spa`;
     let objectId = `${spaId}_${attrSnakeCase}`;
     let uniqueId = `controlmyspa_${objectId}_sensor`;
-    let valueTemplate = `{% if value_json.${attribute} is defined %}{{ value_json.${attribute} }}{% else %}unknown{% endif %}`
+    let valueTemplate = `{% if value_json.${attribute} is defined %}{{ value_json.${attribute} }}{% else %}None{% endif %}`
     let config = {
       "unique_id": uniqueId,
       "object_id": objectId,
@@ -594,7 +594,7 @@ class App extends EventEmitter {
       "temperature_state_template": "{% if value_json.desiredTemp is defined %}{{ value_json.desiredTemp }}{% elif value_json.targetDesiredTemp is defined  %}{{ value_json.targetDesiredTemp }}{% else %}unknown{% endif %}",
       "temperature_command_template": "{{value}}",
       "current_temperature_topic": stateTopic,
-      "current_temperature_template": "{% if value_json.currentTemp is defined %}{{value_json.currentTemp}}{% else %}unknown{% endif %}",
+      "current_temperature_template": "{% if value_json.currentTemp is defined %}{{value_json.currentTemp}}{% else %}None{% endif %}",
       "precision": precision,
       "temp_step": tempStep,
       "temperature_unit": tempUnit,
